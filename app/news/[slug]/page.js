@@ -1,7 +1,7 @@
 import { DUMMY_NEWS } from "@/dummy-news";
 import Image from "next/image";
-import Link from "next/link";
 import classes from "./page.module.css";
+import { notFound } from "next/navigation";
 
 function formatDate(value) {
   const [year, month, day] = value.split("-").map(Number);
@@ -16,14 +16,7 @@ export default function NewsDetailPage({ params }) {
   const news = DUMMY_NEWS.find((item) => item.slug === params.slug);
 
   if (!news) {
-    return (
-      <div className={classes.missing}>
-        <p>News not found.</p>
-        <Link href="/news" className={classes.back}>
-          Back to all news
-        </Link>
-      </div>
-    );
+    notFound();
   }
 
   return (

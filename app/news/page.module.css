@@ -9,7 +9,6 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  text-wrap: balance;
 }
 
 .list {
@@ -57,7 +56,6 @@
   letter-spacing: -0.01em;
   line-height: 1.35;
   text-align: center;
-  text-wrap: balance;
 }
 
 @media (hover: hover) and (pointer: fine) {
