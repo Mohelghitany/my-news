@@ -1,0 +1,77 @@
+.page {
+  width: min(60rem, 90%);
+  margin: 2.5rem auto 4rem;
+}
+
+.heading {
+  margin: 0 0 1.25rem;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+  padding-bottom: 1rem;
+  border-radius: 4px;
+  color: #e5e5e1;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.card:focus-visible {
+  outline: 2px solid #e5e5e1;
+  outline-offset: 3px;
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.image {
+  width: 100%;
+  height: 14rem;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.title {
+  margin: 0;
+  padding-inline: 0.85rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    background-color: #2d2d2b;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: background-color 160ms ease;
+  }
+
+  .card:active {
+    transform: none;
+  }
+}
