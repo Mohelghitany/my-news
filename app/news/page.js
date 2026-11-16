@@ -1,5 +1,5 @@
 import classes from "./page.module.css";
-import NewsList from "@/components/NewsList";
+import NewsList from "@/components/NewsList/page";
 import { getLatestNews } from "@/lib/news";
 
 export default function NewsPage() {
