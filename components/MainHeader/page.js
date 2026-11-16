@@ -10,6 +10,7 @@ export const MainHeader = () => {
   const path = usePathname();
   const onHome = path === "/";
   const onNews = path.startsWith("/news");
+  const onArchive = path.startsWith("/archive");
 
   return (
     <header className={classes.header}>
@@ -41,6 +42,17 @@ export const MainHeader = () => {
               aria-current={onNews ? "page" : undefined}
             >
               News
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/archive"
+              className={
+                onArchive ? `${classes.link} ${classes.active}` : classes.link
+              }
+              aria-current={onArchive ? "page" : undefined}
+            >
+              Archive
             </Link>
           </li>
         </ul>

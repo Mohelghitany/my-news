@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import classes from "./NewsList.module.css";
+import classes from "./page.module.css";
 
 export default function NewsList({ news }) {
   return (
