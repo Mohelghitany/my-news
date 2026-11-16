@@ -1,7 +1,8 @@
+import { notFound } from "next/navigation";
 import { DUMMY_NEWS } from "@/dummy-news";
 import Image from "next/image";
+import Link from "next/link";
 import classes from "./page.module.css";
-import { notFound } from "next/navigation";
 
 function formatDate(value) {
   const [year, month, day] = value.split("-").map(Number);
@@ -22,14 +23,16 @@ export default function NewsDetailPage({ params }) {
   return (
     <article className={classes.page}>
       <h1 className={classes.title}>{news.title}</h1>
-      <Image
-        src={`/images/news/${news.image}`}
-        alt={news.title}
-        priority
-        width={1200}
-        height={600}
-        className={classes.image}
-      />
+      <Link href={`/news/${news.slug}/image`} className={classes.imageLink}>
+        <Image
+          src={`/images/news/${news.image}`}
+          alt={news.title}
+          priority
+          width={1200}
+          height={600}
+          className={classes.image}
+        />
+      </Link>
       <time className={classes.date} dateTime={news.date}>
         {formatDate(news.date)}
       </time>

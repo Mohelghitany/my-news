@@ -12,10 +12,19 @@
   line-height: 1.1;
 }
 
+.imageLink {
+  display: block;
+  border-radius: 4px;
+}
+
+.imageLink:focus-visible {
+  outline: 2px solid #e5e5e1;
+  outline-offset: 3px;
+}
+
 .image {
   display: block;
   width: 100%;
-
   object-fit: cover;
   border-radius: 4px;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);

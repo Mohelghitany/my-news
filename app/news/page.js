@@ -1,9 +1,9 @@
 import classes from "./page.module.css";
 import NewsList from "@/components/NewsList/page";
-import { getLatestNews } from "@/lib/news";
+import { getAllNews } from "@/lib/news";
 
 export default function NewsPage() {
-  const news = getLatestNews();
+  const news = getAllNews();
   return (
     <section className={classes.page}>
       <h1 className={classes.heading}>All News</h1>
