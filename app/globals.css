@@ -159,6 +159,66 @@ ul {
   width: 100%;
 }
 
+.modal-backdrop .modal {
+  position: relative;
+  z-index: 1;
+  width: min(50rem, calc(100% - 2rem));
+  margin: 0;
+}
+
+.modal img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 70vh;
+  margin-inline: auto;
+}
+
+.modal-close {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-top: 1rem;
+  padding: 0.7rem 1.15rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #181817;
+  color: #e5e5e1;
+  font-family: Merriweather, serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid #181817;
+  outline-offset: 3px;
+}
+
+.modal-close:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .modal-close:hover {
+    background-color: #2d2d2b;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-close {
+    transition: background-color 160ms ease;
+  }
+
+  .modal-close:active {
+    transform: none;
+  }
+}
+
 .modal h2,
 .modal h1 {
   margin: 0;

@@ -1,0 +1,59 @@
+.page {
+  width: min(36rem, 90%);
+  margin: 4rem auto;
+  text-align: center;
+}
+
+.title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.message {
+  margin: 0 0 1.5rem;
+  color: #bcbcb7;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.home {
+  display: inline-block;
+  padding: 0.7rem 1.15rem;
+  border-radius: 4px;
+  background-color: #bcbcb7;
+  color: #181817;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.home:focus-visible {
+  outline: 2px solid #e5e5e1;
+  outline-offset: 3px;
+}
+
+.home:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home:hover {
+    background-color: #e5e5e1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home {
+    transition: background-color 160ms ease;
+  }
+
+  .home:active {
+    transform: none;
+  }
+}

@@ -1,0 +1,12 @@
+.page {
+  width: min(60rem, 90%);
+  margin: 2.5rem auto 4rem;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
