@@ -5,7 +5,7 @@ import classes from "./page.module.css";
 export default function NewsList({ news }) {
   return (
     <ul className={classes.list}>
-      {news.map((item) => (
+      {news?.map((item) => (
         <li key={item.id}>
           <Link href={`/news/${item.slug}`} className={classes.card}>
             <Image
@@ -14,6 +14,7 @@ export default function NewsList({ news }) {
               width={300}
               height={200}
               className={classes.image}
+              priority
             />
             <h2 className={classes.title}>{item.title}</h2>
           </Link>

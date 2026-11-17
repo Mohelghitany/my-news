@@ -1,8 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import NewsList from "@/components/NewsList/page";
 import {
-  getAvailableNewsYears,
   getAvailableNewsMonths,
+  getAvailableNewsYears,
   getNewsForYear,
   getNewsForYearAndMonth,
 } from "@/lib/news";
@@ -27,104 +28,159 @@ function monthName(month) {
   return MONTHS[Number(month) - 1];
 }
 
+function periodLabel(year, month) {
+  return month ? `${monthName(month)} ${year}` : year;
+}
+
+function assertKnownYear(years, year) {
+  if (year && !years.some((item) => String(item) === year)) {
+    throw new Error(`${year} is not in the archive.`);
+  }
+}
+
+function assertKnownMonth(months, year, month) {
+  if (!month || months.some((item) => String(item) === month)) {
+    return;
+  }
+
+  const name = monthName(month);
+  throw new Error(
+    name
+      ? `${name} ${year} is not in the archive.`
+      : "That month is not in the archive.",
+  );
+}
+
+function FilterLink({ href, className, current, children }) {
+  return (
+    <Link
+      href={href}
+      className={current ? `${className} ${classes.current}` : className}
+      aria-current={current ? "page" : undefined}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function YearList({ years, selectedYear }) {
+  return (
+    <ul className={classes.years}>
+      {years.map((year) => (
+        <li key={year}>
+          <FilterLink
+            href={`/archive/${year}`}
+            className={classes.link}
+            current={String(year) === selectedYear}
+          >
+            {year}
+          </FilterLink>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function MonthList({ year, months, selectedMonth }) {
+  return (
+    <ul className={classes.months}>
+      {months.map((month) => (
+        <li key={month}>
+          <FilterLink
+            href={`/archive/${year}/${month}`}
+            className={classes.month}
+            current={String(month) === selectedMonth}
+          >
+            {monthName(month)}
+          </FilterLink>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+async function YearNav({ selectedYear }) {
+  const years = await getAvailableNewsYears();
+  assertKnownYear(years, selectedYear);
+  return <YearList years={years} selectedYear={selectedYear} />;
+}
+
+async function MonthNav({ year, selectedMonth }) {
+  const [years, months] = await Promise.all([
+    getAvailableNewsYears(),
+    getAvailableNewsMonths(year),
+  ]);
+
+  assertKnownYear(years, year);
+  assertKnownMonth(months, year, selectedMonth);
+
+  return (
+    <MonthList year={year} months={months} selectedMonth={selectedMonth} />
+  );
+}
+
+async function ArchiveStories({ year, month }) {
+  if (!year) {
+    return (
+      <p className={classes.prompt}>
+        Pick a year to open that part of the archive.
+      </p>
+    );
+  }
+
+  const [years, months, news] = await Promise.all([
+    getAvailableNewsYears(),
+    month ? getAvailableNewsMonths(year) : Promise.resolve([]),
+    month ? getNewsForYearAndMonth(year, month) : getNewsForYear(year),
+  ]);
+
+  assertKnownYear(years, year);
+  assertKnownMonth(months, year, month);
+
+  const stories = Array.isArray(news) ? news : [];
+
+  if (!stories.length) {
+    return (
+      <p className={classes.prompt}>
+        No stories filed for {periodLabel(year, month)}.
+      </p>
+    );
+  }
+
+  return <NewsList news={stories} />;
+}
+
 export default function ArchivePage({ params }) {
   const filter = params.filter ?? [];
-  const selectedYear = filter[0];
-  const selectedMonth = filter[1];
-  const years = getAvailableNewsYears();
-  const months = selectedYear ? getAvailableNewsMonths(selectedYear) : [];
-  const yearIsKnown = years.some((year) => String(year) === selectedYear);
-  const monthIsKnown = months.some((month) => String(month) === selectedMonth);
 
   if (filter.length > 2) {
     throw new Error("That page is not in the archive.");
   }
 
-  if (selectedYear && !yearIsKnown) {
-    throw new Error(`${selectedYear} is not in the archive.`);
-  }
-
-  if (selectedMonth && !monthIsKnown) {
-    const name = monthName(selectedMonth);
-    throw new Error(
-      name
-        ? `${name} ${selectedYear} is not in the archive.`
-        : "That month is not in the archive.",
-    );
-  }
-
-  let news;
-  if (selectedYear && !selectedMonth) {
-    news = getNewsForYear(selectedYear);
-  } else if (selectedYear && selectedMonth) {
-    news = getNewsForYearAndMonth(selectedYear, selectedMonth);
-  }
-
-  let period = "the archive";
-  if (selectedYear && selectedMonth) {
-    period = `${monthName(selectedMonth)} ${selectedYear}`;
-  } else if (selectedYear) {
-    period = selectedYear;
-  }
+  const [selectedYear, selectedMonth] = filter;
 
   return (
     <section>
       <header className={classes.header}>
         <h1 className={classes.heading}>Archive</h1>
         <nav aria-label="Years">
-          <ul className={classes.years}>
-            {years.map((year) => {
-              const current = String(year) === selectedYear;
-              return (
-                <li key={year}>
-                  <Link
-                    href={`/archive/${year}`}
-                    className={
-                      current ? `${classes.link} ${classes.current}` : classes.link
-                    }
-                    aria-current={current ? "page" : undefined}
-                  >
-                    {year}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <Suspense fallback={<p className={classes.prompt}>Loading years...</p>}>
+            <YearNav selectedYear={selectedYear} />
+          </Suspense>
         </nav>
-        {selectedYear && (
+        {selectedYear ? (
           <nav aria-label="Months">
-            <ul className={classes.months}>
-              {months.map((month) => {
-                const current = String(month) === selectedMonth;
-                return (
-                  <li key={month}>
-                    <Link
-                      href={`/archive/${selectedYear}/${month}`}
-                      className={
-                        current
-                          ? `${classes.month} ${classes.current}`
-                          : classes.month
-                      }
-                      aria-current={current ? "page" : undefined}
-                    >
-                      {monthName(month)}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+            <Suspense
+              fallback={<p className={classes.prompt}>Loading months...</p>}
+            >
+              <MonthNav year={selectedYear} selectedMonth={selectedMonth} />
+            </Suspense>
           </nav>
-        )}
+        ) : null}
       </header>
-      {news?.length ? (
-        <NewsList news={news} />
-      ) : (
-        <p className={classes.prompt}>
-          {selectedYear
-            ? `No stories filed for ${period}.`
-            : "Pick a year to open that part of the archive."}
-        </p>
-      )}
+      <Suspense fallback={<p className={classes.prompt}>Loading news...</p>}>
+        <ArchiveStories year={selectedYear} month={selectedMonth} />
+      </Suspense>
     </section>
   );
 }

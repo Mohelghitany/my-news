@@ -1,25 +1,32 @@
+import { Suspense } from "react";
+
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { DUMMY_NEWS } from "@/dummy-news";
+import { getNewsImageBySlug } from "@/lib/news";
 import classes from "./page.module.css";
 
-export default function NewsImagePage({ params }) {
-  const news = DUMMY_NEWS.find((item) => item.slug === params.slug);
-
+async function NewsImage({ slug }) {
+  const news = await getNewsImageBySlug(slug);
   if (!news) {
     notFound();
   }
-
   return (
-    <div className={classes.page}>
-      <Image
-        src={`/images/news/${news.image}`}
-        alt={news.title}
-        width={1200}
-        height={600}
-        priority
-        className={classes.image}
-      />
-    </div>
+    <Image
+      src={`/images/news/${news.image}`}
+      alt={news.title}
+      fill
+      priority
+      className={classes.image}
+    />
+  );
+}
+
+export default function NewsImagePage({ params }) {
+  return (
+    <Suspense
+      fallback={<p className={classes.prompt}>Loading news image...</p>}
+    >
+      <NewsImage slug={params.slug} />
+    </Suspense>
   );
 }
