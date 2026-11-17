@@ -1,5 +1,6 @@
+import { Suspense } from "react";
+import { getNewsBySlug } from "@/lib/news";
 import { notFound } from "next/navigation";
-import { DUMMY_NEWS } from "@/dummy-news";
 import Image from "next/image";
 import Link from "next/link";
 import classes from "./page.module.css";
@@ -13,16 +14,13 @@ function formatDate(value) {
   });
 }
 
-export default function NewsDetailPage({ params }) {
-  const news = DUMMY_NEWS.find((item) => item.slug === params.slug);
-
+async function NewsDetail({ slug }) {
+  const news = await getNewsBySlug(slug);
   if (!news) {
     notFound();
   }
-
   return (
     <article className={classes.page}>
-      <h1 className={classes.title}>{news.title}</h1>
       <Link href={`/news/${news.slug}/image`} className={classes.imageLink}>
         <Image
           src={`/images/news/${news.image}`}
@@ -38,5 +36,13 @@ export default function NewsDetailPage({ params }) {
       </time>
       <p className={classes.content}>{news.content}</p>
     </article>
+  );
+}
+
+export default async function NewsDetailPage({ params }) {
+  return (
+    <Suspense fallback={<p className={classes.prompt}>Loading news...</p>}>
+      <NewsDetail slug={params.slug} />
+    </Suspense>
   );
 }

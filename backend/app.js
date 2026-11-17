@@ -133,9 +133,9 @@ app.get("/news/:slug/image", (req, res) => {
     .prepare("SELECT * FROM news WHERE slug = ?")
     .get(req.params.slug);
   if (news) {
-    res.sendFile(path.join(__dirname, "images", news.image));
+    res.json({ image: news.image, title: news.title });
   } else {
-    res.status(404).json({ message: "News not found" });
+    res.status(404).json({ message: "News image not found" });
   }
 });
 

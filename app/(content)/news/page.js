@@ -3,14 +3,18 @@ import classes from "./page.module.css";
 import NewsList from "@/components/NewsList/page";
 import { getAllNews } from "@/lib/news";
 
-export default async function NewsPage() {
+async function AllNews() {
   const news = await getAllNews();
+  return <NewsList news={news} />;
+}
+
+export default async function NewsPage() {
   return (
     <section className={classes.page}>
       <h1 className={classes.heading}>All News</h1>
 
       <Suspense fallback={<div>Loading news...</div>}>
-        <NewsList news={news} />
+        <AllNews />
       </Suspense>
     </section>
   );
