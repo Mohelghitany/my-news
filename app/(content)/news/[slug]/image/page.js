@@ -14,8 +14,7 @@ async function NewsImage({ slug }) {
     <Image
       src={`/images/news/${news.image}`}
       alt={news.title}
-      width={1200}
-      height={600}
+      fill
       priority
       className={classes.image}
     />
